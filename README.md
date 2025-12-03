@@ -4,93 +4,84 @@
 
 The focus is on simple building blocks: configuration handling, logging, timing, HTTP helpers, caching, string helpers, and more.
 
-Current version: **0.1.1**
+Current version: **0.2.0**
 
-## Features
+## Project goals
 
-- Configuration loader for `.env`, JSON, YAML and TOML files
-- Structured logging with optional colored output
-- Logging configuration helper that can read log level from environment variables
-- Timing utilities for profiling functions and code blocks
-- Thin HTTP client wrapper on top of `requests`, usable as a context manager
-- Crypto helpers for hashing and token generation
-- File helpers for reading, writing and hashing files
-- In memory caching utilities and a `@cached` decorator that correctly handles `None`
-- Simple retry decorators for unreliable operations
-- Small validation helpers for common data types
-- String and math helper functions
-- Lightweight task scheduler for recurring jobs with basic error logging
-- CLI helper for building command line interfaces and a small built in `info` command
-- Environment handling for separating development, staging and production
+- Provide small, composable utilities instead of a heavy framework
+- Keep dependencies minimal and well known
+- Make it easy to reuse the same helpers across many projects
+- Stay readable and beginner friendly while still being robust
 
 ## Installation
 
-You can install the package from a local checkout:
+From a local checkout:
 
 ```bash
 pip install -e .
 ```
 
-or build a wheel and install that:
+## Usage overview
 
-```bash
-python -m build
-pip install dist/pytoolkit-0.1.1-py3-none-any.whl
-```
+The package is split into focused modules:
 
-## Quick start
+- `config_loader` for configuration loading
+- `logger` for logging helpers
+- `timer` for timing and profiling
+- `http_client` for HTTP access
+- `crypto_utils` for hashing and token generation
+- `file_utils` for file handling
+- `cache` for in memory caching
+- `retry` for retry decorators
+- `validators` for common validation helpers
+- `math_tools` for small numeric helpers
+- `string_tools` for text processing
+- `task_scheduler` for recurring jobs
+- `env` for environment handling
+- `cli` for building command line interfaces
+- `context_utils` for working with nested dictionaries
+- `serialization` for JSON / YAML / TOML helpers
 
-Here is a minimal example that combines several utilities:
-
-```python
-from pytoolkit.logger import configure_from_env
-from pytoolkit.config_loader import ConfigLoader
-from pytoolkit.timer import time_function
-from pytoolkit.http_client import HttpClient
-
-logger = configure_from_env()
-
-config = ConfigLoader(
-    env_file=".env",
-    json_file="config.json",
-)
-
-@time_function(logger=logger)
-def fetch_status():
-    with HttpClient() as client:
-        response = client.get("https://httpbin.org/status/200")
-    return response.status_code
-
-if __name__ == "__main__":
-    logger.info("Loaded config: %s", config.as_dict())
-    status = fetch_status()
-    logger.info("HTTP status code: %s", status)
-```
-
-More examples can be found in the `examples` directory.
+See the `examples` directory for small, complete scripts.
 
 ## CLI
 
-After installing the package you can use the small command line interface:
+After installation a small CLI entry point is available:
 
 ```bash
 pytoolkit info
+pytoolkit env
 ```
 
-This prints a short message and verifies that the package and CLI wiring are working.
+Use `pytoolkit --help` to see available commands.
 
-## Modules overview
+## Contributing
 
-(unchanged, see file for full descriptions)
-
-## Testing
-
-Tests are in the `tests` directory and use the standard `unittest` library.
+- Fork the repository
+- Create a new branch for your change
+- Add or adjust tests where it makes sense
+- Run the test suite:
 
 ```bash
 python -m unittest discover -s tests
 ```
 
-## License
+- Open a pull request with a short description of your change
 
-This project is licensed under the MIT license. See the `LICENSE` file for details.
+## Versioning
+
+The project follows a simple semantic versioning scheme:
+
+- Breaking changes bump the **major** version
+- New features bump the **minor** version
+- Small fixes bump the **patch** version
+
+## Changelog (short)
+
+- **0.2.0**
+  - Added context and serialization helpers
+  - Extended CLI with more commands
+  - Added more tests
+  - Added GitHub Actions workflow for linting and tests
+
+For details see the source files.

@@ -11,7 +11,7 @@ logger = configure_from_env()
 
 @time_function(logger=logger)
 def main() -> None:
-    text = "Hello World From pytoolkit"
+    text = "Hello World"
     slug = slugify(text)
     logger.info("Slug: %s", slug)
 

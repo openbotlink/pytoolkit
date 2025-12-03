@@ -8,6 +8,7 @@ from .logger import get_logger, configure_from_env
 from .timer import time_function, Timer
 from .http_client import HttpClient
 from .cache import SimpleCache, cached
+from . import context_utils, serialization
 
 __all__ = [
     "ConfigLoader",
@@ -18,4 +19,6 @@ __all__ = [
     "HttpClient",
     "SimpleCache",
     "cached",
+    "context_utils",
+    "serialization",
 ]

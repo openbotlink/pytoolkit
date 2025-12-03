@@ -2,6 +2,8 @@ import argparse
 from typing import Callable, Dict, Optional
 
 from .logger import get_logger
+from .env import get_environment
+from .config_loader import ConfigLoader
 
 
 _COMMANDS: Dict[str, Callable[[argparse.Namespace], int]] = {}
@@ -29,7 +31,6 @@ def build_parser() -> argparse.ArgumentParser:
 
     for name, func in _COMMANDS.items():
         subparser = subparsers.add_parser(name, help=func.__doc__ or "")
-        # Each command can modify its parser by exposing a `configure_parser` attribute.
         configure = getattr(func, "configure_parser", None)
         if callable(configure):
             configure(subparser)
@@ -55,4 +56,20 @@ logger = get_logger("pytoolkit.cli")
 def info_cmd(args: argparse.Namespace) -> int:
     """Show basic information about the installed package."""
     logger.info("pytoolkit CLI is available and working.")
+    return 0
+
+
+@command("env")
+def env_cmd(args: argparse.Namespace) -> int:
+    """Print the current application environment."""
+    env = get_environment()
+    logger.info("Environment: %s", env.name)
+    return 0
+
+
+@command("config-example")
+def config_example_cmd(args: argparse.Namespace) -> int:
+    """Show a small configuration example from .env and config.json if available."""
+    config = ConfigLoader(env_file=".env", json_file="config.json", prefix="APP_")
+    logger.info("Loaded configuration keys: %s", list(config.as_dict().keys()))
     return 0
