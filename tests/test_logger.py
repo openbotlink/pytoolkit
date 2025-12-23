@@ -31,6 +31,11 @@ class TestLogger(unittest.TestCase):
             logger = get_logger("file_logger", to_file=log_file)
             logger.info("Test message")
             
+            # Close all handlers to release the file (important on Windows)
+            for handler in logger.handlers[:]:
+                handler.close()
+                logger.removeHandler(handler)
+            
             # Check that file was created and contains the message
             with open(log_file, "r") as f:
                 content = f.read()
@@ -39,7 +44,11 @@ class TestLogger(unittest.TestCase):
             self.assertIn("INFO", content)
         finally:
             if os.path.exists(log_file):
-                os.remove(log_file)
+                try:
+                    os.remove(log_file)
+                except PermissionError:
+                    # On Windows, file might still be locked
+                    pass
 
     def test_get_logger_without_colors(self):
         """Test logger without color formatting."""
