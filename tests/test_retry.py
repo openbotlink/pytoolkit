@@ -20,6 +20,7 @@ class TestRetry(unittest.TestCase):
     def test_retry_success_after_failures(self):
         """Test successful execution after some failures."""
         mock_func = Mock(side_effect=[ValueError("error"), ValueError("error"), "success"])
+        mock_func.__name__ = "mock_func"
         decorated = retry(max_attempts=3, initial_delay=0.01, jitter=0)(mock_func)
         
         result = decorated()
@@ -30,6 +31,7 @@ class TestRetry(unittest.TestCase):
     def test_retry_max_attempts_exceeded(self):
         """Test that exception is raised after max attempts."""
         mock_func = Mock(side_effect=ValueError("persistent error"))
+        mock_func.__name__ = "mock_func"
         decorated = retry(max_attempts=3, initial_delay=0.01, jitter=0)(mock_func)
         
         with self.assertRaises(ValueError) as cm:
@@ -52,6 +54,7 @@ class TestRetry(unittest.TestCase):
     def test_retry_with_backoff(self):
         """Test exponential backoff."""
         mock_func = Mock(side_effect=[ValueError("error"), ValueError("error"), "success"])
+        mock_func.__name__ = "mock_func"
         
         start_time = time.time()
         decorated = retry(
